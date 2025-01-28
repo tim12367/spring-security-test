@@ -31,6 +31,10 @@ public class SecurityConfig {
 
 		// csrf 停用
 		http.csrf(csrf -> csrf.disable());
+
+		// <frame>啟用
+		http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
+
 		return http.build();
 	}
 
