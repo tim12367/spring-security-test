@@ -42,6 +42,9 @@ public class SecurityConfig {
 		// <frame>啟用
 		http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
 
+		// 設定oauth2.0
+		http.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(withDefaults()));
+
 		return http.build();
 	}
 
