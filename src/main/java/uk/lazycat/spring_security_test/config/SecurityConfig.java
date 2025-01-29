@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -46,12 +48,14 @@ public class SecurityConfig {
 	@Bean
 	public UserDetailsService userDetailsService(DataSource dataSource) {
 		UserDetails user = User.withUsername("user")
-				.password("{noop}dummy")
+				.password("dummy")
+				.passwordEncoder(str -> passwordEncoder().encode(str))
 				.roles("USER")
 				.build();
 
 		UserDetails admin = User.withUsername("admin")
-				.password("{noop}dummy")
+				.password("dummy")
+				.passwordEncoder(str -> passwordEncoder().encode(str))
 				.roles("ADMIN")
 				.build();
 
@@ -68,5 +72,10 @@ public class SecurityConfig {
 				.setType(EmbeddedDatabaseType.H2)
 				.addScript(JdbcDaoImpl.DEFAULT_USER_SCHEMA_DDL_LOCATION)
 				.build();
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder(); // 預設10
 	}
 }
