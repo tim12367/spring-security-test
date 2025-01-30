@@ -40,7 +40,12 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		// 驗證所有請求
-		http.authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
+		http.authorizeHttpRequests((requests) -> {
+			requests
+					.requestMatchers("/users/**").hasRole("USER")
+					.requestMatchers("/admin/**").hasRole("ADMIN")
+					.anyRequest().authenticated();
+		});
 
 		// 預設登入登出頁面
 //		http.formLogin(withDefaults()); 
