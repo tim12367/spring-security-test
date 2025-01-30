@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
@@ -35,6 +36,7 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
 	@Bean
@@ -42,8 +44,8 @@ public class SecurityConfig {
 		// 驗證所有請求
 		http.authorizeHttpRequests((requests) -> {
 			requests
-					.requestMatchers("/users/**").hasRole("USER")
-					.requestMatchers("/admin/**").hasRole("ADMIN")
+//					.requestMatchers("/users/**").hasRole("USER")
+//					.requestMatchers("/admin/**").hasRole("ADMIN")
 					.anyRequest().authenticated();
 		});
 
@@ -79,12 +81,19 @@ public class SecurityConfig {
 		UserDetails admin = User.withUsername("admin")
 				.password("dummy")
 				.passwordEncoder(str -> passwordEncoder().encode(str))
-				.roles("ADMIN")
+				.roles("ADMIN", "USER")
+				.build();
+
+		UserDetails test123 = User.withUsername("test123")
+				.password("dummy")
+				.passwordEncoder(str -> passwordEncoder().encode(str))
+				.roles("USER")
 				.build();
 
 		JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
 		jdbcUserDetailsManager.createUser(user);
 		jdbcUserDetailsManager.createUser(admin);
+		jdbcUserDetailsManager.createUser(test123);
 
 		return jdbcUserDetailsManager;
 	}
