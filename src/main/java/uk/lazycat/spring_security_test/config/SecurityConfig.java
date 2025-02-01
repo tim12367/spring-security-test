@@ -37,13 +37,15 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import uk.lazycat.spring_security_test.exception.SecurityExceptionHandler;
+
 @Configuration
 @EnableMethodSecurity(jsr250Enabled = true)
 //@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
 	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain securityFilterChain(HttpSecurity http, SecurityExceptionHandler handler) throws Exception {
 		// 驗證所有請求
 		http.authorizeHttpRequests((requests) -> {
 			requests
@@ -68,7 +70,11 @@ public class SecurityConfig {
 		http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
 
 		// 設定oauth2.0
-		http.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(withDefaults()));
+		http.oauth2ResourceServer(oauth2ResourceServer -> {
+			oauth2ResourceServer.jwt(withDefaults());
+			oauth2ResourceServer.authenticationEntryPoint((request, response, e) -> handler.handleAuthenticationException(request, response, e));
+			oauth2ResourceServer.accessDeniedHandler((request, response, e) -> handler.handleAccessDeniedException(request, response, e));
+		});
 
 		return http.build();
 	}
