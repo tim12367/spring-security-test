@@ -18,12 +18,35 @@ public class JwtController {
 	private JwtEncoder jwtEncoder;
 
 	/*
-	 * Authentication json結構: { "authorities": [ { "authority": "ROLE_USER" } ],
-	 * "details": { "remoteAddress": "0:0:0:0:0:0:0:1", "sessionId": null },
-	 * "authenticated": true, "principal": { "password": null, "username": "user",
-	 * "authorities": [ { "authority": "ROLE_USER" } ], "accountNonExpired": true,
-	 * "accountNonLocked": true, "credentialsNonExpired": true, "enabled": true },
-	 * "credentials": null, "name": "user" }
+@formatter:off
+{
+   "authorities":[
+      {
+         "authority":"ROLE_USER"
+      }
+   ],
+   "details":{
+      "remoteAddress":"0:0:0:0:0:0:0:1",
+      "sessionId":null
+   },
+   "authenticated":true,
+   "principal":{
+      "password":null,
+      "username":"user",
+      "authorities":[
+         {
+            "authority":"ROLE_USER"
+         }
+      ],
+      "accountNonExpired":true,
+      "accountNonLocked":true,
+      "credentialsNonExpired":true,
+      "enabled":true
+   },
+   "credentials":null,
+   "name":"user"
+} 
+@formatter:off
 	 */
 
 	@PostMapping("/authenticate")
