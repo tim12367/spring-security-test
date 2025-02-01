@@ -1,7 +1,6 @@
 package uk.lazycat.spring_security_test.controller;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,6 @@ public class JwtController {
 				.expiresAt(now.plusSeconds(60 * 30)) // 30分鐘有效
 				.subject(authentication.getName())
 				.claim("scope", this.createScope(authentication))
-				.claim("roles", this.createRoles(authentication))
 				.build();
 
 		JwtEncoderParameters parameter = JwtEncoderParameters.from(claims);
@@ -50,14 +48,9 @@ public class JwtController {
 	private String createScope(Authentication authentication) {
 		return authentication.getAuthorities().stream()
 				.map(authority -> authority.getAuthority())
-				.collect(Collectors.joining(",")); // 拿出所有角色
+				.collect(Collectors.joining(" ")); // 拿出所有角色
 	}
 
-	private List<String> createRoles(Authentication authentication) {
-		return authentication.getAuthorities().stream()
-				.map(authority -> authority.getAuthority())
-				.toList();
-	}
 }
 
 record JwtResponse(String token) {
