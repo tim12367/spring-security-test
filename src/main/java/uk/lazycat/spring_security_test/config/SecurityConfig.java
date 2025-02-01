@@ -30,6 +30,9 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -56,6 +59,14 @@ public class SecurityConfig {
 
 		// 預設登入登出頁面
 //		http.formLogin(withDefaults()); 
+
+		HeaderWriterLogoutHandler clearSiteData = new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(Directive.ALL));
+		// 自訂登出
+		http.logout((logout) -> {
+			logout.logoutUrl("/logout"); // 登出網址
+			logout.logoutSuccessUrl("/swagger-ui/index.html"); // 重新定向網址
+			logout.addLogoutHandler(clearSiteData); // 清理所有資料
+		});
 
 		// 使用stateless不建立session
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
