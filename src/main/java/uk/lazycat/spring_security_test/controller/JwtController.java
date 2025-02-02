@@ -59,7 +59,7 @@ public class JwtController {
 		JwtClaimsSet claims = JwtClaimsSet.builder()
 				.issuer("self")
 				.issuedAt(now)
-				.expiresAt(now.plusSeconds(60 * 30)) // 30分鐘有效
+				.expiresAt(now.plusSeconds(60L * 30L)) // 30分鐘有效
 				.subject(authentication.getName())
 				.claim("scope", this.createScope(authentication))
 				.build();
